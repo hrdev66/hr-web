@@ -1,0 +1,31 @@
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid #222;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  color: #444;
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  border-color: #555;
+  color: #e8e8e8;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+}
+
+.icon {
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 200;
+}
+
+.label {
+  font-size: 9px;
+  font-weight: 200;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}

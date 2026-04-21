@@ -1,0 +1,14 @@
+.cursor {
+  position: fixed;
+  width: 2px;
+  height: 18px;
+  background: #ffffff;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}

@@ -1,0 +1,389 @@
+.host {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+  position: relative;
+}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sideTitle {
+  padding: 16px 20px 12px;
+  font-size: 10px;
+  font-weight: 300;
+  color: #444;
+  letter-spacing: 0.08em;
+}
+
+.divider {
+  height: 1px;
+  background: #1a1a1a;
+  margin: 0;
+}
+
+.folderList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.folderList::-webkit-scrollbar { width: 2px; }
+.folderList::-webkit-scrollbar-thumb { background: #1e1e1e; }
+
+.empty {
+  padding: 12px 20px;
+  font-size: 10px;
+  color: #2d2d2d;
+}
+
+.folderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.folderRow:hover { background: rgba(255,255,255,0.03); }
+.folderActive    { background: rgba(255,255,255,0.05) !important; }
+
+.folderArrow { font-size: 10px; color: #444; width: 10px; flex-shrink: 0; }
+.folderName  { flex: 1; font-size: 12px; font-weight: 300; color: #bbb; }
+.folderActive .folderName { color: #e8e8e8; }
+.folderCount { font-size: 9px; color: #333; }
+
+/* new folder row */
+.newFolderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+}
+.plus { font-size: 14px; color: #333; flex-shrink: 0; }
+.newFolderInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #888;
+  caret-color: #fff;
+  min-width: 0;
+}
+.newFolderInput::placeholder { color: #262626; }
+.newFolderBtn {
+  background: transparent;
+  border: 1px solid #222;
+  color: #333;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s, color 0.2s;
+}
+.newFolderBtn:hover { border-color: #555; color: #e8e8e8; }
+
+/* ═══ MAIN ═══ */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.noFolder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 12px;
+  color: #2d2d2d;
+}
+.noFolderIcon { font-size: 16px; }
+
+/* main header */
+.mainHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  border-bottom: 1px solid #1a1a1a;
+  flex-shrink: 0;
+}
+.mainTitle { font-size: 11px; font-weight: 300; color: #666; letter-spacing: 0.06em; }
+.mainCount { font-size: 10px; color: #2d2d2d; flex: 1; }
+.folderLinkBtn {
+  background: transparent;
+  border: 1px solid #222;
+  padding: 4px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: #444;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.folderLinkBtn:hover { border-color: #555; color: #aaa; }
+
+/* drop zone */
+.dropZone {
+  margin: 16px 24px;
+  border: 1px dashed #222;
+  padding: 20px;
+  text-align: center;
+  font-size: 10px;
+  color: #333;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+.dropZone:hover   { border-color: #444; color: #666; }
+.dropOver         { border-color: #888; color: #888; background: rgba(255,255,255,0.02); }
+.dropUploading    { border-color: #555; color: #555; cursor: default; animation: pulse 1s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+.noImages {
+  padding: 24px;
+  font-size: 10px;
+  color: #2d2d2d;
+}
+
+/* ═══ IMAGE GRID ═══ */
+.grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 24px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  align-content: start;
+}
+.grid::-webkit-scrollbar { width: 3px; }
+.grid::-webkit-scrollbar-thumb { background: #1e1e1e; }
+
+/* image card */
+.card {
+  border: 1px solid #1a1a1a;
+  background: #0c0c0c;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: #333; }
+
+.thumb {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+  background: #111;
+  border-bottom: 1px solid #1a1a1a;
+  cursor: zoom-in;
+}
+
+.cardInfo {
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cardName {
+  font-size: 10px;
+  font-weight: 400;
+  color: #aaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cardSize {
+  font-size: 9px;
+  color: #333;
+}
+.cardUrl {
+  font-size: 8px;
+  color: #2a2a2a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+/* card actions */
+.cardActions {
+  display: flex;
+  border-top: 1px solid #1a1a1a;
+}
+.actBtn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-right: 1px solid #1a1a1a;
+  padding: 8px 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.actBtn:last-child { border-right: none; }
+.actBtn:hover { background: rgba(255,255,255,0.04); color: #888; }
+.actDel:hover { color: #aaa; }
+.actBtn:disabled { opacity: 0.3; cursor: default; }
+
+/* ═══ LIGHTBOX ═══ */
+.lightboxOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  cursor: zoom-out;
+}
+
+.lightboxInner {
+  display: flex;
+  flex-direction: column;
+  max-width: 90vw;
+  max-height: 90vh;
+  cursor: default;
+}
+
+.lightboxImg {
+  max-width: 100%;
+  max-height: calc(90vh - 44px);
+  object-fit: contain;
+  display: block;
+  border: 1px solid #1e1e1e;
+}
+
+.lightboxBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid #1e1e1e;
+  border-top: none;
+  background: #0a0a0a;
+}
+
+.lightboxName {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 300;
+  color: #555;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lightboxClose {
+  background: transparent;
+  border: 1px solid #222;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: #444;
+  padding: 4px 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 16px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.lightboxClose:hover { border-color: #555; color: #aaa; }
+
+/* ═══ CONFIRM DIALOG ═══ */
+.confirmOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 50;
+  backdrop-filter: blur(4px);
+}
+
+.confirmBox {
+  border: 1px solid #2a2a2a;
+  background: #0a0a0a;
+  padding: 28px 32px;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.confirmLabel {
+  font-size: 10px;
+  font-weight: 300;
+  color: #555;
+  letter-spacing: 0.1em;
+}
+
+.confirmFile {
+  font-size: 13px;
+  font-weight: 400;
+  color: #ccc;
+  word-break: break-all;
+}
+
+.confirmDetail {
+  font-size: 10px;
+  color: #3a3a3a;
+  letter-spacing: 0.06em;
+}
+
+.confirmActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.confirmYes,
+.confirmNo {
+  flex: 1;
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  padding: 8px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.confirmYes {
+  color: #888;
+}
+.confirmYes:hover {
+  border-color: #888;
+  color: #e8e8e8;
+}
+
+.confirmNo {
+  color: #3a3a3a;
+}
+.confirmNo:hover {
+  border-color: #555;
+  color: #888;
+}

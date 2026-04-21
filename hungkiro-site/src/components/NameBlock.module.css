@@ -1,0 +1,165 @@
+.center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  text-align: center;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* ── Comments ── */
+.comment {
+  font-size: clamp(9px, 1.1vw, 12px);
+  font-weight: 300;
+  color: #666;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadein 0.4s ease forwards;
+}
+.c1 { animation-delay: 0.8s; }
+.c2 { animation-delay: 1.0s; margin-bottom: 36px; }
+.c3 { animation-delay: 3.8s; margin-top: 36px; }
+.c4 { animation-delay: 4.0s; }
+
+/* ── Name wrapper — stacking context for CA layers ── */
+.nameWrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Shared name text ── */
+.nameText {
+  font-size: clamp(80px, 16vw, 220px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 0.88;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  user-select: none;
+}
+
+/* ── HÙNG — solid ── */
+.nameHung {
+  color: #ffffff;
+  opacity: 0;
+  animation: fadein 0s ease 1.3s forwards, glow 4s ease-in-out 4s infinite;
+}
+
+/* ── KIRO — outline ── */
+.nameKiro {
+  color: transparent;
+  -webkit-text-stroke: 1.5px #ffffff;
+  opacity: 0;
+  animation: fadein 0s ease 2.6s forwards;
+}
+
+/* ── Chromatic aberration ghost layers ── */
+.caRed,
+.caBlue {
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  overflow: hidden;
+}
+
+/* Solid CA for HÙNG */
+.nameHung.caRed  { color: rgba(255, 60, 60, 0.45); }
+.nameHung.caBlue { color: rgba(60, 120, 255, 0.45); }
+
+/* Outline CA for KIRO */
+.nameKiro.caRed  { -webkit-text-stroke: 1.5px rgba(255, 60, 60, 0.45); color: transparent; }
+.nameKiro.caBlue { -webkit-text-stroke: 1.5px rgba(60, 120, 255, 0.45); color: transparent; }
+
+/* Activate CA on hover of sibling nameWrap */
+.nameWrap:hover .caRed  { opacity: 1; animation: caShiftRed  0.06s steps(1) infinite; }
+.nameWrap:hover .caBlue { opacity: 1; animation: caShiftBlue 0.06s steps(1) infinite; }
+
+@keyframes caShiftRed {
+  0%  { transform: translate(-4px, 1px); }
+  33% { transform: translate(3px, -2px); }
+  66% { transform: translate(-2px, 2px); }
+  100%{ transform: translate(-4px, 1px); }
+}
+@keyframes caShiftBlue {
+  0%  { transform: translate(4px, -1px); }
+  33% { transform: translate(-3px, 2px); }
+  66% { transform: translate(2px, -2px); }
+  100%{ transform: translate(4px, -1px); }
+}
+
+/* ── Typing mask ── */
+.mask {
+  position: absolute;
+  inset: 0;
+  background: #080808;
+  animation: reveal 1s steps(5, end) forwards;
+}
+
+.nameHung .mask { animation-delay: 1.3s; }
+.nameKiro .mask { animation-delay: 2.6s; }
+
+@keyframes reveal {
+  0%   { left: 0; }
+  100% { left: 101%; }
+}
+
+/* ── Divider ── */
+.divider {
+  width: 1px;
+  height: 0;
+  background: linear-gradient(to bottom, transparent, #666, transparent);
+  margin: 10px auto;
+  animation: growline 0.6s ease 2.4s forwards;
+}
+@keyframes growline { to { height: 28px; } }
+
+/* ── Block cursor ── */
+.blockCur {
+  display: inline-block;
+  width: clamp(40px, 8vw, 110px);
+  height: clamp(74px, 15vw, 204px);
+  background: #ffffff;
+  vertical-align: bottom;
+  margin-left: 8px;
+  opacity: 0;
+  animation: fadein 0s 2.6s forwards, blockblink 0.9s step-end 3.7s infinite;
+}
+@keyframes blockblink { 50% { opacity: 0; } }
+
+/* ── Glitch on hover (main text only) ── */
+.nameWrap:hover .nameText:not(.caRed):not(.caBlue) {
+  animation: glitch 0.4s steps(2, end) infinite;
+  cursor: none;
+}
+
+@keyframes glitch {
+  0%   { transform: translate(0);          clip-path: none; }
+  20%  { transform: translate(-3px,  1px); clip-path: inset(28% 0 52% 0); }
+  40%  { transform: translate( 3px, -1px); clip-path: inset(58% 0  6% 0); }
+  60%  { transform: translate(-2px,  2px); clip-path: inset( 8% 0 78% 0); }
+  80%  { transform: translate( 2px,  0);  }
+  100% { transform: translate(0);          clip-path: none; }
+}
+
+/* ── Glow breathing ── */
+@keyframes glow {
+  0%,  100% { text-shadow: 0 0 20px rgba(255,255,255,0.04); }
+  50%        { text-shadow: 0 0 70px rgba(255,255,255,0.16), 0 0 140px rgba(255,255,255,0.05); }
+}
+
+@keyframes fadein { to { opacity: 1; } }

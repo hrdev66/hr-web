@@ -1,0 +1,189 @@
+/* ── Outer shell ── */
+.wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Message thread ── */
+.thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0 20px;
+  scroll-behavior: smooth;
+}
+
+.thread::-webkit-scrollbar { width: 3px; }
+.thread::-webkit-scrollbar-track { background: transparent; }
+.thread::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+
+/* ── Single message ── */
+.msg {
+  padding: 18px clamp(20px, 5vw, 60px);
+  border-bottom: 1px solid #111;
+  animation: msgIn 0.3s ease forwards;
+  opacity: 0;
+}
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.kiro { background: transparent; }
+.user { background: rgba(255,255,255,0.018); }
+
+/* meta row */
+.msgMeta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.msgRole {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.kiro .msgRole { color: #555; }
+.user .msgRole { color: #999; }
+
+.msgTime {
+  font-size: 9px;
+  font-weight: 200;
+  color: #2d2d2d;
+  letter-spacing: 0.08em;
+}
+
+/* body */
+.msgBody {
+  line-height: 1.85;
+}
+
+.commentLine {
+  font-size: clamp(10px, 1.1vw, 12px);
+  font-weight: 300;
+  color: #444;
+  letter-spacing: 0.02em;
+}
+
+.textLine {
+  font-size: clamp(12px, 1.3vw, 14px);
+  font-weight: 300;
+  color: #d0d0d0;
+  letter-spacing: 0.01em;
+}
+
+.user .textLine { color: #e8e8e8; }
+
+/* ── Typing indicator ── */
+.typingDots {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  height: 22px;
+}
+.typingDots span {
+  display: block;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #333;
+  animation: dotPulse 1.1s ease-in-out infinite;
+}
+.typingDots span:nth-child(2) { animation-delay: 0.18s; }
+.typingDots span:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes dotPulse {
+  0%,80%,100% { opacity: 0.2; transform: scale(0.85); }
+  40%          { opacity: 1;   transform: scale(1.15); }
+}
+
+/* ── Input bar ── */
+.inputBar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px clamp(20px, 5vw, 60px);
+  border-top: 1px solid #1e1e1e;
+  background: rgba(8, 8, 8, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  flex-shrink: 0;
+}
+
+.inputPrompt {
+  font-size: 12px;
+  font-weight: 300;
+  color: #444;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.inputUser { color: #777; }
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 300;
+  color: #e8e8e8;
+  caret-color: #fff;
+  min-width: 0;
+}
+.input::placeholder { color: #262626; }
+
+.sendBtn {
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid #222;
+  color: #444;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.sendBtn:hover:not(:disabled) {
+  border-color: #666;
+  color: #e8e8e8;
+  box-shadow: 0 0 12px rgba(255,255,255,0.06);
+}
+.sendBtn:disabled { opacity: 0.2; cursor: default; }
+
+/* ── Streaming indicators ── */
+.streamingBadge {
+  font-size: 8px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: #2d2d2d;
+  border: 1px solid #1e1e1e;
+  padding: 1px 6px;
+  animation: badgePulse 1s ease-in-out infinite;
+}
+@keyframes badgePulse {
+  0%,100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+.streamCaret {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  background: #555;
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: caretBlink 0.6s step-end infinite;
+}
+@keyframes caretBlink {
+  50% { opacity: 0; }
+}
+
+/* disabled input style while streaming */
+.input:disabled { opacity: 0.5; }
+.input:disabled::placeholder { color: #333; }

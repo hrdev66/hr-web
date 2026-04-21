@@ -1,0 +1,52 @@
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #3a3a3a;
+  padding-bottom: 14px;
+  opacity: 0;
+  animation: fadein 0.5s ease 0.2s forwards;
+}
+
+.left {
+  font-size: 11px;
+  font-weight: 300;
+  color: #666;
+  letter-spacing: 0.05em;
+}
+
+.path {
+  color: #e8e8e8;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.clock {
+  font-size: 10px;
+  font-weight: 200;
+  color: #3a3a3a;
+  letter-spacing: 0.1em;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3a3a3a;
+}
+
+.dotMid { background: #555; }
+.dotDim { background: #333; }
+
+@keyframes fadein {
+  to { opacity: 1; }
+}
