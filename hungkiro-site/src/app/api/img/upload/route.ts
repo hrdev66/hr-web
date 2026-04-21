@@ -1,19 +1,29 @@
+import { getRequestContext } from '@cloudflare/next-on-pages';
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir, access } from 'fs/promises';
-import path from 'path';
 
-const UPLOADS = path.join(process.cwd(), 'public', 'uploads');
+export const runtime = 'edge';
+
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/avif']);
 const MAX_SIZE = 20 * 1024 * 1024;
 
-async function exists(p: string) {
-  try { await access(p); return true; } catch { return false; }
+function extname(filename: string) {
+  const i = filename.lastIndexOf('.');
+  return i === -1 ? '' : filename.slice(i);
+}
+
+function basename(filename: string, ext: string) {
+  const name = filename.slice(0, filename.length - ext.length);
+  return name.replace(/[/\\:*?"<>|]/g, '').trim() || 'image';
 }
 
 export async function POST(req: NextRequest) {
-  const form      = await req.formData();
-  const folder    = (form.get('folder') as string | null)?.replace(/[^a-zA-Z0-9_-]/g, '');
-  const file      = form.get('file') as File | null;
+  const { env } = getRequestContext<CloudflareEnv>();
+  const bucket = env.BUCKET;
+  const r2Url = process.env.NEXT_PUBLIC_R2_URL ?? '';
+
+  const form = await req.formData();
+  const folder = (form.get('folder') as string | null)?.replace(/[^a-zA-Z0-9_-]/g, '');
+  const file = form.get('file') as File | null;
   const overwrite = form.get('overwrite') === 'true';
 
   if (!folder || !file)
@@ -23,18 +33,21 @@ export async function POST(req: NextRequest) {
   if (file.size > MAX_SIZE)
     return NextResponse.json({ error: 'File too large (max 20 MB)' }, { status: 400 });
 
-  const ext      = path.extname(file.name);
-  const base     = path.basename(file.name, ext).replace(/[/\\:*?"<>|]/g, '').trim() || 'image';
+  const ext = extname(file.name);
+  const base = basename(file.name, ext);
   const fileName = `${base}${ext}`;
-  const dir      = path.join(UPLOADS, folder);
+  const key = `${folder}/${fileName}`;
 
-  await mkdir(dir, { recursive: true });
-
-  /* conflict check */
-  if (!overwrite && await exists(path.join(dir, fileName))) {
-    return NextResponse.json({ conflict: true, name: fileName }, { status: 409 });
+  if (!overwrite) {
+    const existing = await bucket.head(key);
+    if (existing) {
+      return NextResponse.json({ conflict: true, name: fileName }, { status: 409 });
+    }
   }
 
-  await writeFile(path.join(dir, fileName), Buffer.from(await file.arrayBuffer()));
-  return NextResponse.json({ ok: true, name: fileName, url: `/uploads/${folder}/${fileName}` });
+  await bucket.put(key, await file.arrayBuffer(), {
+    httpMetadata: { contentType: file.type },
+  });
+
+  return NextResponse.json({ ok: true, name: fileName, url: `${r2Url}/${key}` });
 }

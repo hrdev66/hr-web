@@ -28,14 +28,11 @@ export default function ImgHost() {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver]   = useState(false);
   const [copied, setCopied]       = useState<string | null>(null);
-  const [origin, setOrigin]       = useState('');
   const [deleting, setDeleting]   = useState<string | null>(null);
   const [progress, setProgress]   = useState<Record<string, number>>({});
   const [dialog, setDialog]       = useState<ConfirmDialog | null>(null);
   const [preview, setPreview]     = useState<{ url: string; name: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => { setOrigin(window.location.origin); }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPreview(null); };
@@ -146,8 +143,10 @@ export default function ImgHost() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const fullUrl = (url: string) => `${origin}${url}`;
-  const mdUrl   = (url: string, name: string) => `![${name}](${origin}${url})`;
+  // R2 URLs are already absolute
+  const fullUrl = (url: string) => url;
+  const mdUrl   = (url: string, name: string) => `![${name}](${url})`;
+  const r2Base  = process.env.NEXT_PUBLIC_R2_URL ?? '';
 
   return (
     <div className={styles.host}>
@@ -206,7 +205,7 @@ export default function ImgHost() {
               <span className={styles.mainCount}>{images.length} images</span>
               <button
                 className={styles.folderLinkBtn}
-                onClick={() => copy(`${origin}/uploads/${active}/`, `folder-${active}`)}
+                onClick={() => copy(`${r2Base}/${active}/`, `folder-${active}`)}
               >
                 {copied === `folder-${active}` ? '✓ copied' : '⎘ folder url'}
               </button>
