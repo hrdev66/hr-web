@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@opennextjs/cloudflare": "^1.19.3"
+  }
+}

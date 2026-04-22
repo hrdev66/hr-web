@@ -1,4 +1,4 @@
-import { getRequestContext } from '@cloudflare/next-on-pages';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
@@ -14,7 +14,7 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ name: string }> }
 ) {
-  const { env } = getRequestContext<CloudflareEnv>();
+  const { env } = await getCloudflareContext({ async: true }) as { env: CloudflareEnv };
   const bucket = env.BUCKET;
   const r2Url = process.env.NEXT_PUBLIC_R2_URL ?? '';
 

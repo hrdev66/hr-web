@@ -1,10 +1,10 @@
-import { getRequestContext } from '@cloudflare/next-on-pages';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
 export async function DELETE(req: NextRequest) {
-  const { env } = getRequestContext<CloudflareEnv>();
+  const { env } = await getCloudflareContext({ async: true }) as { env: CloudflareEnv };
   const bucket = env.BUCKET;
 
   const { folder, name } = await req.json() as { folder: string; name: string };

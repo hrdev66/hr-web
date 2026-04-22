@@ -1,4 +1,4 @@
-import { getRequestContext } from '@cloudflare/next-on-pages';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
@@ -11,7 +11,7 @@ function isImage(key: string) {
 }
 
 export async function GET() {
-  const { env } = getRequestContext<CloudflareEnv>();
+  const { env } = await getCloudflareContext({ async: true }) as { env: CloudflareEnv };
   const bucket = env.BUCKET;
 
   const listed = await bucket.list({ delimiter: '/' });
@@ -28,14 +28,13 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const { env } = getRequestContext<CloudflareEnv>();
+  const { env } = await getCloudflareContext({ async: true }) as { env: CloudflareEnv };
   const bucket = env.BUCKET;
 
   const { name } = await req.json() as { name: string };
   const safe = name.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40);
   if (!safe) return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
 
-  // R2 has no real folders — create a placeholder to make the prefix visible
   await bucket.put(`${safe}/.keep`, '', { httpMetadata: { contentType: 'text/plain' } });
   return NextResponse.json({ ok: true, name: safe });
 }
